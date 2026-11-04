@@ -15,7 +15,7 @@ Assess engineering correctness of the **Meher Flow** production operating system
 
 ## Scope and risk
 
-Use [module charters](references/module-charters.md) as the candidate-sensitive test menu. Build requirement-to-test coverage, not a fixed number of test cases. Discover domain implementation from source; distinguish implemented, unfinished, and planned. M0–M9 in the PRD describe a product roadmap, not a list of universally shipped features.
+Use [module charters](references/module-charters.md) as the candidate-sensitive test menu. Apply the [nonfunctional matrix](references/nonfunctional-matrix.md) and [synthetic fixtures](references/fixtures-and-environments.md) only where the release scope and risk require them. Build requirement-to-test coverage, not a fixed number of test cases. Discover domain implementation from source; distinguish implemented, unfinished, and planned. M0–M9 in the PRD describe a product roadmap, not a list of universally shipped features.
 
 Meher Flow invariants take priority:
 
