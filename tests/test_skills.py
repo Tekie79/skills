@@ -89,6 +89,21 @@ class SkillTests(unittest.TestCase):
                 skills.scaffold(name, description, self.root)
         self.assertEqual(list(self.root.iterdir()), [self.skill])
 
+    def test_local_links_validate_and_missing_links_fail(self):
+        (self.skill / "references").mkdir()
+        (self.skill / "references" / "guide.md").write_text("# Guide\n", encoding="utf-8")
+        self.document(body="# Instructions\nSee [guide](references/guide.md), [web](https://example.com), and [section](#instructions).")
+        self.assertEqual(skills.validate(self.skill), [])
+        self.document(body="# Instructions\nSee [missing](references/absent.md).")
+        self.assertIn("invalid local resource link", " ".join(skills.validate(self.skill)))
+
+    def test_link_cannot_escape_installed_skill(self):
+        (self.root / "escape.md").write_text("secret", encoding="utf-8")
+        self.document(body="# Instructions\nSee [outside](../escape.md).")
+        self.assertIn("invalid local resource link", " ".join(skills.validate(self.skill)))
+        self.document(body="# Instructions\nSee [encoded outside](%2e%2e/escape.md).")
+        self.assertIn("invalid local resource link", " ".join(skills.validate(self.skill)))
+
     def test_cli_exit_codes(self):
         self.document()
         with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):

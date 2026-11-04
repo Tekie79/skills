@@ -4,6 +4,7 @@ import argparse
 from pathlib import Path
 import re
 import sys
+from urllib.parse import unquote
 
 try:
     import yaml
@@ -14,6 +15,7 @@ except ImportError:
 WORKSPACE = Path(__file__).resolve().parents[1]
 NAME = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 FIELDS = {"name", "description", "license", "compatibility", "metadata", "allowed-tools"}
+LOCAL_LINK = re.compile(r"(?<!!)\[[^\]\n]+\]\(([^)\n]+)\)")
 
 
 class UniqueKeyLoader(yaml.SafeLoader):
@@ -101,6 +103,20 @@ def validate(skill):
         errors.append("replace draft TODO markers and template placeholders before release")
     if len(lines) >= 500:
         errors.append("keep SKILL.md below 500 lines; move detail into references/")
+
+    # Installed skills are standalone. Catch broken or escaping relative resources.
+    root = skill.resolve()
+    body = "\n".join(lines[end + 1:])
+    for raw_target in LOCAL_LINK.findall(body):
+        target = raw_target.strip().split(maxsplit=1)[0]
+        if target.startswith(("#", "https://", "http://", "mailto:", "data:")):
+            continue
+        location = unquote(target.split("#", 1)[0].split("?", 1)[0])
+        if not location:
+            continue
+        path = (skill / location).resolve()
+        if root not in path.parents or not path.is_file():
+            errors.append(f"invalid local resource link: {raw_target}")
     return errors
 
 
