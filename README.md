@@ -54,8 +54,8 @@ Validate a single skill or an alternative collection:
 .venv/bin/python scripts/skills.py validate --root /path/to/skill-collection
 ```
 
-The validator checks metadata, naming, nonempty instructions, and unfinished draft
-markers. It intentionally requires a mapping-style YAML frontmatter and the
+The validator checks metadata, naming, nonempty instructions, unfinished draft
+markers, and local resource links within each standalone skill. It intentionally requires a mapping-style YAML frontmatter and the
 current specification's field names. It does not prove instruction quality,
 runtime compatibility, script safety, or task success. See
 [the authoring guide](docs/authoring.md) for behavioral evaluation.
