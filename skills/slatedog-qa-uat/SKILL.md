@@ -1,14 +1,11 @@
 ---
 name: slatedog-qa-uat
-description: "Audit and test SlateDog (Meher Flow) SaaS for QA, UAT, quality control, and release\
-  \ readiness. Use for risk-based test plans, regression testing, code efficiency,\
-  \ time and space complexity, performance, UI/UX design, accessibility, SEO, security,\
-  \ tenant isolation, data integrity, and go/no-go reviews across web/PWA, API, worker,\
-  \ and desktop. Not for implementing unrelated features or declaring product-owner\
-  \ acceptance."
+description: "Legacy SlateDog QA and UAT assessment workflow, retained for callers who explicitly request slatedog-qa-uat or legacy SlateDog checks. For new Meher Flow feature QA and UAT use meher-flow-qa; for unrelated projects use specialist QA skills."
 ---
 
-# SlateDog QA, UAT, and Release Readiness
+# Legacy SlateDog QA, UAT, and Release Readiness
+
+Compatibility entry for historical SlateDog skill installations. For new Meher Flow work, prefer the independent meher-flow-qa skill, which adds current feature charters, scoped regression and filmmaker UAT. This legacy skill remains self-contained and usable.
 
 Produce an evidence-backed quality assessment of SlateDog, branded **Meher Flow**
 to users. Cover the requested change deeply and classify every quality dimension

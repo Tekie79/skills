@@ -39,3 +39,11 @@ and `docs/authoring.md` before creating or substantially changing a skill.
   configured development environment.
 - For tooling changes, run `python -m unittest discover -s tests -v`.
 - Report what changed, what was tested, and any unverified runtime behavior.
+
+## Multi-Project QA Skills
+
+- Use the `meher-flow-qa` project skill for Meher Flow's application contracts and feature acceptance; keep generic QA/UAT/performance/security skills product-neutral.
+- Avoid duplicating extensive generic instructions inside newly authored project skills. A standalone skill can summarize the necessary workflow, and may reference other skills only as optional independent selections; never require files from another installed skill directory.
+- Keep trigger descriptions non-overlapping where practical. The old `slatedog-qa-uat` entry is preserved for explicit compatibility use; new Meher Flow requests should select `meher-flow-qa`.
+- Validate Markdown resource links and negative-trigger tests. A planned evaluation case without actual runtime results is not a PASS.
+- For Meher Flow, distinguish focused feature regression, human UAT, full release qualification, and public publication. Do not weaken project release policy to match available tests.

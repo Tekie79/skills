@@ -4,6 +4,7 @@ import argparse
 from pathlib import Path
 import re
 import sys
+from urllib.parse import unquote, urlsplit
 
 try:
     import yaml
@@ -54,6 +55,41 @@ def scaffold(name, description, root):
     return target
 
 
+
+def validate_resource_links(skill):
+    """Reject broken/escaping local Markdown links in a standalone skill bundle."""
+    errors = []
+    root = skill.resolve()
+    for markdown in sorted(skill.rglob("*.md")):
+        try:
+            lines = markdown.read_text(encoding="utf-8").splitlines()
+        except (OSError, UnicodeError) as exc:
+            errors.append(f"cannot read linked Markdown {markdown}: {exc}")
+            continue
+        fenced = False
+        for line_number, line in enumerate(lines, start=1):
+            if re.match(r"^\\s*(?:```|~~~)", line):
+                fenced = not fenced
+                continue
+            if fenced:
+                continue
+            for match in re.finditer(r"!?\\[[^\\]\\n]+\\]\\(([^)\\n]+)\\)", line):
+                destination = match.group(1).strip()
+                if destination.startswith("<") and destination.endswith(">"):
+                    destination = destination[1:-1]
+                # Optional Markdown title: [label](path "title")
+                destination = destination.split(' "', 1)[0]
+                parts = urlsplit(destination)
+                if parts.scheme or destination.startswith("//") or not parts.path:
+                    continue
+                target = (markdown.parent / unquote(parts.path)).resolve()
+                label = f"{markdown.relative_to(skill)}:{line_number} -> {destination}"
+                if not target.is_relative_to(root):
+                    errors.append(f"resource link escapes skill directory: {label}")
+                elif not target.is_file():
+                    errors.append(f"missing linked resource: {label}")
+    return errors
+
 def validate(skill):
     errors = []
     try:
@@ -101,6 +137,7 @@ def validate(skill):
         errors.append("replace draft TODO markers and template placeholders before release")
     if len(lines) >= 500:
         errors.append("keep SKILL.md below 500 lines; move detail into references/")
+    errors.extend(validate_resource_links(skill))
     return errors
 
 

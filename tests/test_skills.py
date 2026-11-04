@@ -89,6 +89,37 @@ class SkillTests(unittest.TestCase):
                 skills.scaffold(name, description, self.root)
         self.assertEqual(list(self.root.iterdir()), [self.skill])
 
+
+    def test_skill_local_markdown_links_pass(self):
+        refs = self.skill / "references"
+        refs.mkdir()
+        assets = self.skill / "assets"
+        assets.mkdir()
+        (assets / "template.md").write_text("# Template\\n", encoding="utf-8")
+        (refs / "details.md").write_text("[template](../assets/template.md)\\n", encoding="utf-8")
+        self.document(body="See [details](references/details.md) and [external](https://example.com/a).")
+        self.assertEqual(skills.validate(self.skill), [])
+
+    def test_missing_resource_link_in_skill_fails(self):
+        self.document(body="See [missing](references/missing.md).")
+        self.assertIn("missing linked resource", " ".join(skills.validate(self.skill)))
+
+    def test_missing_resource_link_in_reference_fails(self):
+        refs = self.skill / "references"
+        refs.mkdir()
+        (refs / "details.md").write_text("[gone](other.md)\\n", encoding="utf-8")
+        self.document(body="See [details](references/details.md).")
+        self.assertIn("missing linked resource", " ".join(skills.validate(self.skill)))
+
+    def test_outside_skill_link_is_rejected(self):
+        (self.root / "other.md").write_text("Out of bundle", encoding="utf-8")
+        self.document(body="See [outside](../other.md).")
+        self.assertIn("resource link escapes", " ".join(skills.validate(self.skill)))
+
+    def test_fenced_examples_and_local_anchors_are_ignored(self):
+        self.document(body="# How to\\n\\n```md\\n[example](not-a-file.md)\\n```\\nSee [section](#how-to).")
+        self.assertEqual(skills.validate(self.skill), [])
+
     def test_cli_exit_codes(self):
         self.document()
         with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):

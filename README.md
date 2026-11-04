@@ -1,93 +1,79 @@
 # Agent Skills Workspace
 
-A provider-neutral workspace for developing reusable AI agent skills. Skills follow
-the [Agent Skills specification](https://agentskills.io/specification), rather than
-a proprietary prompt or tool format.
+An organization-wide collection of **portable, independently installable Agent Skills**. Each directory follows the [Agent Skills specification](https://agentskills.io/specification). The collection separates general-purpose QA disciplines from Meher Flow's film-production business contracts. No skill automatically installs, deploys, approves or releases anything.
+
+## Skill catalog
+
+| Skill | Use when | Scope |
+| --- | --- | --- |
+| [meher-flow-qa](skills/meher-flow-qa/SKILL.md) | QA, regression, UI, UAT or release testing **for Meher Flow** | Project-specific entrypoint; script, Breakdown, Library, Shot Designer, Scheduling, AI, self-host and later milestones |
+| [qa-test-design](skills/qa-test-design/SKILL.md) | Design risk-based cases and select regressions | Generic across projects |
+| [qa-test-execution](skills/qa-test-execution/SKILL.md) | Execute authorized tests or develop test automation | Generic across projects |
+| [uat-business-acceptance](skills/uat-business-acceptance/SKILL.md) | Facilitate actual stakeholder task acceptance | Generic across projects |
+| [qa-security-resilience](skills/qa-security-resilience/SKILL.md) | Authorization, tenant boundaries, data integrity and recovery | Generic across projects |
+| [qa-ux-accessibility](skills/qa-ux-accessibility/SKILL.md) | UI fidelity, browser/device workflows and WCAG | Generic across projects |
+| [qa-performance](skills/qa-performance/SKILL.md) | Complexity, benchmarks, performance and capacity | Generic across projects |
+| [qa-release-readiness](skills/qa-release-readiness/SKILL.md) | Exact-candidate release decision and mandatory gates | Generic across projects |
+| [slatedog-qa-uat](skills/slatedog-qa-uat/SKILL.md) | Explicit legacy callers of the previous SlateDog QA package | Compatibility; prefer meher-flow-qa for new work |
+
+Each skill is self-contained. **Do not assume one skill implicitly installs or imports another.** For a Meher Flow request, load its project skill; for specialized work in another repository, load the relevant generic skill. When a task spans multiple disciplines, one coordinator can apply multiple skills without conflating their test results.
+
+## Meher Flow quality approach
+
+The [Meher Flow skill](skills/meher-flow-qa/SKILL.md) includes feature charters and scenario IDs for organization/project boundaries, screenplay import/revisions, scene Breakdown/aliases, Project Library, Shot List/Storyboard, 2D Shot Designer (including camera coverage), Scheduling/Call Sheets, AI, and conditional production/post/delivery milestones.
+
+- **Focused feature QA:** test the changed behavior, impacted dependencies and protected canonical/tenant invariants. Do not routinely replay all historical tests after every isolated UI fix.
+- **Automation:** an actual command, immutable SHA, test discovery count, result, fixture and redacted artifact are required for a PASS. Zero discovered tests, skips and blocked environments are not successes.
+- **Human UAT:** a filmmaker or other authorized owner must perform/accept the real task. An agent or green browser suite cannot sign on their behalf.
+- **Public release:** current application release policy and mandatory gates are authoritative. A feature can be UAT-ready while public publication remains disabled.
+
+Detailed adoption guidance: [QA and UAT routing](docs/quality-usage.md).
 
 ## Layout
 
 ```text
-AGENTS.md                   Instructions for agents working in this workspace
-docs/authoring.md           Authoring, safety, evaluation, and release checklist
-templates/skill/SKILL.md    Starter instructions, not an installed skill
-skills/                    Authored skills (created by the scaffold command)
-scripts/skills.py           Scaffold and validate skills
-tests/test_skills.py        Tests for the development tooling
-requirements-dev.txt       Development dependencies only
+AGENTS.md                    Workspace agent instructions
+docs/authoring.md            Authoring/evaluation/security rules
+docs/quality-usage.md        Selecting and adopting QA skills
+templates/skill/SKILL.md     Scaffold template (not an installed skill)
+skills/<skill-name>/SKILL.md Independently deployable skill
+skills/<skill-name>/references/   Optional self-contained detail/evaluation cases
+skills/<skill-name>/assets/       Optional reports/static templates
+scripts/skills.py            Scaffold and structural/reference validator
+tests/test_skills.py         Tooling tests (not application tests)
+.github/workflows/skills-validate.yml   Skill library CI
 ```
 
-Each published skill is a self-contained directory:
+## Quick start
 
-```text
-skills/my-skill/
-  SKILL.md                 Required metadata and instructions
-  scripts/                 Optional deterministic helpers
-  references/              Optional detailed guidance, including evaluations
-  assets/                  Optional templates or static resources
-```
-
-Create optional directories only when they contain useful material. The workspace
-tooling is not a dependency of the skills you author.
-
-## Quick Start
-
-Requires Python 3.10 or newer. Run commands from this workspace directory.
+Python 3.10+ is required to develop/validate skills. Run from the repository root:
 
 ```sh
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements-dev.txt
-.venv/bin/python scripts/skills.py new summarize-notes --description "Summarize meeting notes into decisions and action items. Use when turning meeting transcripts or rough notes into a concise team summary."
-```
-
-Edit `skills/summarize-notes/SKILL.md`, replacing every `TODO` with concrete
-instructions. Then validate and test:
-
-```sh
+.venv/bin/python scripts/skills.py new summarize-notes --description "Summarize meeting notes into decisions and action items. Use when processing a rough transcript."
 .venv/bin/python scripts/skills.py validate
 .venv/bin/python -m unittest discover -s tests -v
 ```
 
-Validate a single skill or an alternative collection:
+After scaffolding, replace draft markers and add linked task-specific evaluations. Or validate one:
 
 ```sh
-.venv/bin/python scripts/skills.py validate skills/summarize-notes
-.venv/bin/python scripts/skills.py validate --root /path/to/skill-collection
+.venv/bin/python scripts/skills.py validate skills/meher-flow-qa
 ```
 
-The validator checks metadata, naming, nonempty instructions, and unfinished draft
-markers. It intentionally requires a mapping-style YAML frontmatter and the
-current specification's field names. It does not prove instruction quality,
-runtime compatibility, script safety, or task success. See
-[the authoring guide](docs/authoring.md) for behavioral evaluation.
+The validator checks frontmatter, naming, draft placeholders, nonempty instructions, and local Markdown links that exist **inside each skill**. It does not test a running agent, execute application QA, certify sandbox permissions, prove behavioral quality or validate external URLs. For optional spec checks, run the upstream [skills-ref](https://github.com/agentskills/agentskills/tree/main/skills-ref) separately.
 
-## Use With Agents
+## Example requests
 
-Install or link individual directories under `skills/` into the skill discovery
-location documented by your target agent. Discovery paths, tool permissions, and
-installation commands vary by runtime; this repository does not install anything
-automatically. Do not install `templates/` as a skill collection.
+- “Prepare focused QA and regression tests for Meher Flow Shot Designer's camera coverage selector; report skipped risks.”
+- “Create independent director and 1st AD UAT scripts for Meher Flow's Stripboard and Day Plan.”
+- “Review this application's API tenant isolation using synthetic tenants and an authorized test environment.”
+- “Compare baseline and candidate rendering performance for 1,200 layout objects; do not invent measurements.”
+- “Audit an exact release candidate against its policy and human acceptance evidence; do not deploy.”
 
-Keep instructions portable. Document any required tools, credentials, network
-access, or runtime-specific behavior in each skill. Never embed credentials.
+## Distribution and safety
 
-## Available Skills
+Install or link only the intended skill directory into the target agent's documented discovery path. Do not install the template or repository root as a skill. Keep credentials out of prompts and fixtures. Real test execution, migration/seed, external messaging, load, publication, pushes and merges require appropriate explicit authorization and verified safe targets. A skill never grants privileges.
 
-[`slatedog-qa-uat`](skills/slatedog-qa-uat/SKILL.md) provides project-specific QA,
-UAT, and release-readiness workflows for SlateDog / Meher Flow. It covers
-functional and advanced testing, code efficiency and complexity, performance,
-design/accessibility/SEO, tenant security, data integrity, and operational recovery.
-
-Example requests after loading the skill in your agent:
-
-- "Build a risk-based UAT plan for Meher Flow's Library upload changes."
-- "Review SlateDog reconciliation time/space complexity and propose benchmarks."
-- "Assess this exact release candidate; distinguish missing evidence from failures."
-
-The skill includes a pinned repository research baseline, not an application QA
-result. Read its safety boundaries before running tests or touching an environment.
-
-## Scope
-
-This baseline does not choose a domain, model, runtime, deployment platform, or
-license for future skills. Set licensing explicitly before distributing content.
-Do not assume third-party examples or assets can be redistributed.
+This repository is for multiple organizational projects. Product adapters must not redefine other projects' security policies or claim future capabilities already exist. Set licensing explicitly before distributing third-party content or examples.

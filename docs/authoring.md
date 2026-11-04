@@ -84,3 +84,11 @@ The local checks implement baseline repository conventions, not every possible
 runtime constraint. For an additional specification check, the upstream
 [skills-ref validator](https://github.com/agentskills/agentskills/tree/main/skills-ref)
 can be installed separately and run with `skills-ref validate ./skills/my-skill`.
+
+## 6. Compose Organization-Wide Skills Without Hidden Dependencies
+
+Keep general QA disciplines separate from project adapters. A project adapter records actual domain objects, business acceptance oracles, known commands and policy sources, while generic skills provide reusable methods. Each installed directory must be complete without references to files in neighboring skills.
+
+Record the exact source SHA and date of any project map or release policy; refresh it before using it as current evidence. Separate a behavioral evaluation plan from a real executed result. During development, the workspace validator checks links within each skill's Markdown resources as well as frontmatter, naming and draft markers. It does not validate external links, actual agent discovery, application functionality or safety permissions.
+
+For test-focused skills, prefer an evidence ledger with requirement, role/tenant, fixture, observable UI/API/persistence oracle, actual test execution, failure classification and human owner. A generic release skill must defer to the candidate's canonical required suites and explicit release controls. Human UAT sign-off is always a separate decision.

@@ -1,0 +1,38 @@
+name: Validate Agent Skills
+
+on:
+  push:
+    paths:
+      - "skills/**"
+      - "scripts/**"
+      - "tests/**"
+      - "templates/**"
+      - "requirements-dev.txt"
+      - ".github/workflows/skills-validate.yml"
+  pull_request:
+    paths:
+      - "skills/**"
+      - "scripts/**"
+      - "tests/**"
+      - "templates/**"
+      - "requirements-dev.txt"
+      - ".github/workflows/skills-validate.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install development validator dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Validate skill metadata and bundled links
+        run: python scripts/skills.py validate
+      - name: Test development tooling
+        run: python -m unittest discover -s tests -v
