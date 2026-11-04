@@ -1,23 +1,19 @@
 ---
 name: slatedog-qa-uat
-description: "Audit and test SlateDog (Meher Flow) SaaS for QA, UAT, quality control, and release\
-  \ readiness. Use for risk-based test plans, regression testing, code efficiency,\
-  \ time and space complexity, performance, UI/UX design, accessibility, SEO, security,\
-  \ tenant isolation, data integrity, and go/no-go reviews across web/PWA, API, worker,\
-  \ and desktop. Not for implementing unrelated features or declaring product-owner\
-  \ acceptance."
+description: "Backward-compatible combined QA, UAT and release-readiness audit for the SlateDog codebase branded Meher Flow. Use when an existing workflow explicitly requests slatedog-qa-uat or a broad all-in-one assessment across technical tests, human acceptance evidence, performance, accessibility, security and release. Prefer meher-flow-qa and meher-flow-uat for focused new work."
 ---
-
-# SlateDog QA, UAT, and Release Readiness
+# SlateDog / Meher Flow — Combined QA, UAT, and Release Readiness (Legacy)
 
 Produce an evidence-backed quality assessment of SlateDog, branded **Meher Flow**
 to users. Cover the requested change deeply and classify every quality dimension
 as tested, blocked, unrun, or justified as inapplicable. This skill is not a claim
 of exhaustive testing, a compliance certificate, or product-owner acceptance.
 
+For new focused requests, use the standalone meher-flow-qa skill for technical QA, meher-flow-uat for filmmaker business acceptance, and release-evidence-review for cross-project release evidence where installed. This compatibility skill remains fully usable when installed alone. The specialized skills are not dependencies and this skill must continue working independently.
+
 ## Activation and Inputs
 
-Use for SlateDog test strategy, audits, regression, acceptance criteria, performance
+Use for an explicitly combined SlateDog test strategy, audits, regression, acceptance criteria, performance
 or complexity reviews, design/accessibility/SEO assessments, and release decisions.
 Do not activate solely for an unrelated application's QA or a feature implementation
 without quality-assessment scope. Do not silently expand a focused review into a

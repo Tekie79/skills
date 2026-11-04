@@ -84,3 +84,13 @@ The local checks implement baseline repository conventions, not every possible
 runtime constraint. For an additional specification check, the upstream
 [skills-ref validator](https://github.com/agentskills/agentskills/tree/main/skills-ref)
 can be installed separately and run with `skills-ref validate ./skills/my-skill`.
+
+## 6. Multiple Products and Quality Skills
+
+Use focused, independently installable skills rather than one workspace-wide giant prompt. Name the target product in the skill name only for project-specific workflows. A generic quality-engineering skill must not assume another product's stack, CI gates, severity policy, test URLs, role names, or credentials.
+
+For QA skills, explicitly distinguish plans from source audit and independently executed runtime tests. Define a change-impact and regression-selection process including critical security/data boundaries. For UAT, use human-facing business tasks and keep real acceptance decisions separate from agent outputs. For release skills, verify immutable source/artifact binding and current project-specific release controls.
+
+A project map must state the inspected repository, SHA, date and known freshness limits. Roadmap features cannot be treated as implemented. Prefer proportionate regression, with protected invariants and mandatory gates, to replaying an unbounded historical suite for each change.
+
+Validate all relative links from SKILL.md and test that a skill directory operates without this workspace. Evaluation case tables remain a plan until actual target-runtime execution is recorded. See [skill routing](skill-routing.md).
