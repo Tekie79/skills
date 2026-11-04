@@ -68,12 +68,12 @@ def validate_resource_links(skill):
             continue
         fenced = False
         for line_number, line in enumerate(lines, start=1):
-            if re.match(r"^\\s*(?:```|~~~)", line):
+            if re.match(r"^\s*(?:```|~~~)", line):
                 fenced = not fenced
                 continue
             if fenced:
                 continue
-            for match in re.finditer(r"!?\\[[^\\]\\n]+\\]\\(([^)\\n]+)\\)", line):
+            for match in re.finditer(r"!?\[[^\]]+\]\(([^)]+)\)", line):
                 destination = match.group(1).strip()
                 if destination.startswith("<") and destination.endswith(">"):
                     destination = destination[1:-1]
